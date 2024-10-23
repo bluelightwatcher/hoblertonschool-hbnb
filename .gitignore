@@ -1,0 +1,6 @@
+venv/
+pycache/
+v1/*pycache*/
+models/*pycache*/
+persistence/*pycache*/
+service/*pycache*/
