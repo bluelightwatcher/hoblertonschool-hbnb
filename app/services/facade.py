@@ -46,9 +46,10 @@ class HBnBFacade:
             })
         return user
     
-    @classmethod
-    def create_place():
-        pass
+    def create_place(self, place_data):
+        place = Place(**place_data)
+        self.place_repo.add(place)
+        return place
 
     @classmethod
     def create_review():

@@ -34,7 +34,6 @@ class User(BaseModel):
                 return email 
        
         
-
         @classmethod
         def add_place():
                pass
