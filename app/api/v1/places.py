@@ -11,6 +11,7 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='latitude coordinate'),
     'longitude': fields.Float(required=True, description='longitude coordinate'),
     'owner': fields.String(required=True, description='define is user is admin')
+    'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
 })
 
 facade = HBnBFacade()
