@@ -18,7 +18,9 @@ place_model = api.model('Place', {
     'description': fields.String(required=False, description='description of the place'),
     'latitude': fields.Float(required=True, description='latitude coordinate'),
     'longitude': fields.Float(required=True, description='longitude coordinate'),
-    'owner': fields.String(required=True, description='define is user is admin')
+    'owner_id': fields.String(required=True, description='ID of the owner'),
+    'owner': fields.String(required=True, description='define is user is admin'),
+    'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
     'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
     })
 
