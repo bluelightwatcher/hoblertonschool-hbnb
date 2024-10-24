@@ -3,6 +3,14 @@ from app.services.facade import HBnBFacade
 
 api = Namespace('places', description='Place operations')
 
+# Adding the review model
+review_model = api.model('PlaceReview', {
+    'id': fields.String(description='Review ID'),
+    'text': fields.String(description='Text of the review'),
+    'rating': fields.Integer(description='Rating of the place (1-5)'),
+    'user_id': fields.String(description='ID of the user')
+})
+
 # Define the user model for input validation and documentation
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='title of the place'),
