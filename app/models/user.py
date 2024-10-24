@@ -1,12 +1,14 @@
 from app.models.base_model import BaseModel
 import re
 
+
 class User(BaseModel):
         def __init__(self,first_name, last_name, email, is_admin=False):
                 super().__init__()
                 self.first_name = self.first_name_check(first_name)
                 self.last_name = self.last_name_check(last_name)
                 self.is_admin = is_admin 
+
                 self.email = self.email_check(email)
 
         @staticmethod

@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from app.services.facade import HBnBFacade
+from app.services.facade import HBnBFacade as facade
 
 api = Namespace('users', description='User operations')
 
@@ -10,7 +10,6 @@ user_model = api.model('User', {
     'email': fields.String(required=True, description='Email of the user')
 })
 
-facade = HBnBFacade()
 
 
 @api.route('/')
