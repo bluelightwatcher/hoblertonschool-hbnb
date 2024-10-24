@@ -3,6 +3,14 @@ from app.models.user import User
 from app.models.place import Place      
 
 class HBnBFacade:
+
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(HBnBFacade, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+    
     def __init__(self):
         self.user_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
@@ -46,12 +54,25 @@ class HBnBFacade:
             })
         return user
     
+
+
+    @classmethod
+    def create_review():
+        pass
+
     def create_place(self, place_data):
         place = Place(**place_data)
         self.place_repo.add(place)
         return place
 
-    @classmethod
-    def create_review():
+    def get_place(self, place_id):
+    # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
         pass
-        
+
+    def get_all_places(self):
+    # Placeholder for logic to retrieve all places
+        pass
+
+    def update_place(self, place_id, place_data):
+    # Placeholder for logic to update a place
+        pass
