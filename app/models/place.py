@@ -32,9 +32,10 @@ class Place(BaseModel):
     
     @staticmethod
     def title_check(title):
-        if len(title) > 100 or len(title) < 0:
+        if 0 <= len(title) >= 100:
+            return title
+        else:
             raise ValueError("Title is too long")
-        return title
     
     @staticmethod   
     def latitude_check(latitude):
