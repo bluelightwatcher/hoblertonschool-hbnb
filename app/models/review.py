@@ -16,7 +16,7 @@ class Review(BaseModel):
     
     @staticmethod
     def rating_check(rating):
-        if (< 0 rating > 5):
+        if (0 <=  rating >= 5):
             raise ValueError("Rating must be between 1 and 5")
         return rating
     
