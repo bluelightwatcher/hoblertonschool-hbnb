@@ -84,7 +84,25 @@ class HBnBFacade:
         return self.reviews.pop(review_id, None) is not None
 
     def create_place(self, place_data):
+        """poping owner_id from api payload"""
+        owner_id = place_data.get('owner_id', None)
+        """geting the owner object from the repo"""
+        owner = self.get_user(owner_id)
+        if owner is None:
+            raise ValueError(f"Owner ID : {owner_id} not found")
+                
+        """removing the reviews and amenities from the payload"""
+        reviews = place_data.pop('reviews', [])
+        amenities = place_data.pop('amenities', [])
+
+        """creating the place and adding the owner object"""
         place = Place(**place_data)
+
+        """adding back previously removed field"""
+        place.reviews = reviews
+        place.amenities = amenities
+
+        """storing the place in repo"""
         self.place_repo.add(place)
         return place
 
@@ -99,3 +117,5 @@ class HBnBFacade:
     def update_place(self, place_id, place_data):
     # Placeholder for logic to update a place
         pass
+
+facade =  HBnBFacade()
