@@ -1,6 +1,7 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
-from app.models.place import Place      
+from app.models.place import Place  
+from flask_restx import marshal
 
 class HBnBFacade:
     """
@@ -16,6 +17,11 @@ class HBnBFacade:
         return cls._instance
 
     """
+    def __init__(self):
+        self.user_repo = InMemoryRepository()
+        self.place_repo = InMemoryRepository()
+        self.review_repo = InMemoryRepository()
+        self.amenity_repo = InMemoryRepository()
     
 
 

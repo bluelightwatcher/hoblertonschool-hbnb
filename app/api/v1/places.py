@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from app.services.facade import HBnBFacade as facade
+from app.services.facade import facade
 
 api = Namespace('places', description='Place operations')
 
@@ -38,10 +38,10 @@ class PlaceList(Resource):
     def post(self):
         """Register a new place"""
         place_data = api.payload
-        user_id = place_data.get("owner_id")
+        user_id = place_data.get('owner_id')
         user = facade.get_user(user_id)
         if user is None:
-            return{'error': 'Owner not found'}, 400
+            return (f"error': 'Owner not found"), 400
         
         place_data['owner'] = user
 

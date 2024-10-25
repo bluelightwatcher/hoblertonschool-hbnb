@@ -7,9 +7,10 @@ class User(BaseModel):
                 super().__init__()
                 self.first_name = self.first_name_check(first_name)
                 self.last_name = self.last_name_check(last_name)
-                self.is_admin = is_admin 
-
+                self.is_admin = is_admin
                 self.email = self.email_check(email)
+                self.places = []
+                self.reviews = []
 
         @staticmethod
         def first_name_check(first_name):
@@ -37,9 +38,9 @@ class User(BaseModel):
        
         
         @classmethod
-        def add_place():
-               pass
+        def add_place(self, place):
+               self.places.append(place)
 
         @classmethod
-        def add_review():
-               pass       
+        def add_review(self, review):
+               self.reviews.append(review)

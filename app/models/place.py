@@ -2,14 +2,14 @@ from app.models.base_model import BaseModel
 from app.models.user import User
 
 class Place(BaseModel):
-    def __init__(self, title, description, price, latitude, longitude, owner_id, owner=None):
+    def __init__(self, title, description, price, latitude, longitude, owner):
         super().__init__()
         self.title = self.title_check(title)
         self.description = description
         self.price = self.price_check(price)
         self.latitude = self.latitude_check(latitude)
         self.longitude = self.longitude_check(longitude)
-        self.owner_id = self.owner_check(owner_id)
+        # self.owner_id = self.owner_check(owner_id)
         self.owner = self.owner_check(owner)
         self.reviews = []  # List to store related reviews
         self.amenities = []  # List to store related amenities
@@ -52,7 +52,6 @@ class Place(BaseModel):
     def owner_check(owner):
         if not isinstance(owner, User):
             raise ValueError(f"Owner {owner} must be a valid User instance")
-            print(type(owner))
         return owner
         
     @classmethod
