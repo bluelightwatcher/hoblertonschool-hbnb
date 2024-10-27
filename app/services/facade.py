@@ -64,27 +64,27 @@ class HBnBFacade:
         pass
 
     def create_place(self, place_data):
-        """poping owner_id from api payload"""
-        owner_id = place_data.get('owner_id', None)
-        """geting the owner object from the repo"""
+        """removing owner_id from place_data"""
+        owner_id = place_data.pop('owner_id')
+
+        """get user object """
         owner = self.get_user(owner_id)
-        if owner is None:
-            raise ValueError(f"Owner ID : {owner_id} not found")
-                
-        """removing the reviews and amenities from the payload"""
-        reviews = place_data.pop('reviews', [])
-        amenities = place_data.pop('amenities', [])
 
-        """creating the place and adding the owner object"""
+        """Add User object to the place_data"""
+        place_data['owner'] = owner
+
+        """creating the place """
         place = Place(**place_data)
-
-        """adding back previously removed field"""
-        place.reviews = reviews
-        place.amenities = amenities
 
         """storing the place in repo"""
         self.place_repo.add(place)
-        return place
+
+        """adding back the owner_id for client response"""
+
+        place_data['owner_id'] = owner_id
+
+        """returning place object and owner_id for client response"""
+        return place_data
 
     def get_place(self, place_id):
     # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
