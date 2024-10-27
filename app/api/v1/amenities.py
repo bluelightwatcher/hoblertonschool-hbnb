@@ -25,18 +25,20 @@ class AmenityList(Resource):
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
         """Retrieve a list of all amenities"""
-        # Placeholder for logic to return a list of all amenities
-        pass
+        return marshal(facade.get_all_amenities(), amenity_response_model), 200
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
+    @api.expect('amenity_id')
     @api.response(200, 'Amenity details retrieved successfully')
     @api.response(404, 'Amenity not found')
-    def get(self, amenity_id):
-        """Get amenity details by ID"""
-        # Placeholder for the logic to retrieve an amenity by ID
-        pass
-
+    def get(self, amenity_id):  
+        """Get amenity details by ID""" 
+        amenity = facade.get_amenity(amenity_id)    
+        if not amenity: 
+            return {'error': 'Amenity not found'}, 404  
+        return marshal(amenity, amenity_response_model), 200    
+    
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
