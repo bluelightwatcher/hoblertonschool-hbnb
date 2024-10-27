@@ -1,6 +1,7 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place  
+from app.models.amenity import Amenity
 from flask_restx import marshal
 from flask import Flask, jsonify
 
@@ -32,10 +33,6 @@ class HBnBFacade:
         self.user_repo.add(user)
         return (user)
 
-    # Placeholder method for fetching a place by ID
-    def get_place(self, place_id):
-        # Logic will be implemented in later tasks
-        pass
     
     def get_user(self, id): 
         return self.user_repo.get(id)
@@ -59,31 +56,22 @@ class HBnBFacade:
     
 
 
-    @classmethod
-    def create_review():
-        pass
+
+# Place method
 
     def create_place(self, place_data):
-        """removing owner_id from place_data"""
+        """Create_place removes the owner_id from the paylod
+        fetch the user object with the owner_id
+        create the place
+        stores the place
+        adds the owner_id back for proper client response"""
+
         owner_id = place_data.pop('owner_id')
-
-        """get user object """
         owner = self.get_user(owner_id)
-
-        """Add User object to the place_data"""
         place_data['owner'] = owner
-
-        """creating the place """
         place = Place(**place_data)
-
-        """storing the place in repo"""
         self.place_repo.add(place)
-
-        """adding back the owner_id for client response"""
-
         place_data['owner_id'] = owner_id
-
-        """returning place object and owner_id for client response"""
         return place_data
 
     def get_place(self, place_id):
@@ -96,6 +84,29 @@ class HBnBFacade:
 
     def update_place(self, place_id, place_data):
     # Placeholder for logic to update a place
+        pass
+
+# Amenity method
+
+    def create_amenity(self, amenity_data):
+        amenity = Amenity(**amenity_data)
+        return amenity
+
+    def get_amenity(self, amenity_id):
+        return self.amenity_repo(amenity_id)
+
+    def get_all_amenities(self):
+    # Placeholder for logic to retrieve all amenities
+        pass
+
+    def update_amenity(self, amenity_id, amenity_data):
+    # Placeholder for logic to update an amenity
+        pass
+
+# Review method 
+
+    @classmethod
+    def create_review():
         pass
 
 facade =  HBnBFacade()
