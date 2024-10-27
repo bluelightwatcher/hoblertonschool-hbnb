@@ -7,7 +7,10 @@ api = Namespace('amenities', description='Amenity operations')
 amenity_model = api.model('Amenity', {
     'name': fields.String(required=True, description='Name of the amenity')
 })
-
+amenity_response_model = api.model('Amenity_response', {
+    'id': fields.String(required=True, description='id of the amenity'),
+    'name': fields.String(required=True, description='name of the amenity')
+})
 @api.route('/')
 class AmenityList(Resource):
     @api.expect(amenity_model)
@@ -17,7 +20,7 @@ class AmenityList(Resource):
         """Register a new amenity"""
         amenity_data = api.payload
         amenity = facade.create_amenity(amenity_data)
-        return marshal(amenity, amenity_model)
+        return marshal(amenity, amenity_response_model)
 
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
