@@ -32,18 +32,20 @@ class AmenityResource(Resource):
     @api.expect('amenity_id')
     @api.response(200, 'Amenity details retrieved successfully')
     @api.response(404, 'Amenity not found')
-    def get(self, amenity_id):  
-        """Get amenity details by ID""" 
-        amenity = facade.get_amenity(amenity_id)    
-        if not amenity: 
-            return {'error': 'Amenity not found'}, 404  
-        return marshal(amenity, amenity_response_model), 200    
-    
+    def get(self, amenity_id):
+        """Get amenity details by ID"""
+        amenity = (facade.get_amenity(amenity_id))
+        return marshal(amenity, amenity_response_model, 200)
+
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
-        """Update an amenity's information"""
-        # Placeholder for the logic to update an amenity by ID
-        pass
+        amenity_data = api.payload
+
+        amenity = facade.update_amenity(amenity_id, amenity_data)
+        if not amenity:
+            return {'error': 'Amenity not found'}, 404
+        else:
+            return {f"message": "Amenity updated successfully"}, 200
