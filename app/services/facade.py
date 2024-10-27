@@ -2,6 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place  
 from flask_restx import marshal
+from flask import Flask, jsonify
 
 class HBnBFacade:
     """
@@ -29,15 +30,15 @@ class HBnBFacade:
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repo.add(user)
-        return user
+        return (user)
 
     # Placeholder method for fetching a place by ID
     def get_place(self, place_id):
         # Logic will be implemented in later tasks
         pass
     
-    def get_user(self, user_id): 
-        return self.user_repo.get(user_id)
+    def get_user(self, id): 
+        return self.user_repo.get(id)
     
 
     def get_user_by_email(self, email):
@@ -47,20 +48,13 @@ class HBnBFacade:
         user = self.get_user(user_id)
         if not user:
             raise ValueError("user not foud")
-            return 404
 
-        if 'first_name' in user_data:
-            user.first_name = user_data['first_name']
-        if 'last_name' in user_data:
-            user.last_name = user_data['last_name']
-        if 'email' in user_data:
-            user.email = user_data['email']
+        for key, value in user_data.items():
+            if hasattr(user, key):  
+                setattr(user, key, value)
 
-        self.user_repo.update(user.id, {
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email
-            })
+
+        self.user_repo.update(user.id, user_data)
         return user
     
 
