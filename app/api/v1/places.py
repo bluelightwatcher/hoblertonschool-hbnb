@@ -51,9 +51,19 @@ place_get_response_model = api.model('Place_creation_response', {
     'title': fields.String(required=True, description='Title of the place'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
+place_detail_response_model = api.model('Place_detail_get_response', {
+    'id': fields.String(required=True, description='id of the place'),
+    'title': fields.String(required=True, description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'latitude': fields.Float(required=True, description='Latitude of the place'),
+    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'owner_id': fields.String(required=True, description='ID of the owner'),
+    'owner': fields.Nested(user_model, description='Owner details'),
+    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+})
 
 
 @api.route('/')
@@ -79,14 +89,18 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
-        # Placeholder for the logic to retrieve a place by ID, including associated owner and amenities
-        pass
+        place = facade.get_place(place_id)
+        return marshal(place, place_detail_response_model), 200
 
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
-        """Update a place's information"""
-        # Placeholder for the logic to update a place by ID
-        pass
+        place_data = api.payload
+
+        place = facade.update_place(place_id, place_data)
+        if not place:
+            return {'error': 'place not found'}, 404
+        else:
+            return {f'message': 'place successfully updated'}, 200
