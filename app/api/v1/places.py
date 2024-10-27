@@ -1,4 +1,4 @@
-from flask_restx import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields, marshal
 from app.services.facade import facade
 
 api = Namespace('places', description='Place operations')
@@ -27,37 +27,27 @@ place_model = api.model('Place', {
     'owner': fields.Nested(user_model, description='Owner details'),
     'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
+place_creation_model = api.model('Place_creation', {
+    'title': fields.String(required=True, description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'latitude': fields.Float(required=True, description='Latitude of the place'),
+    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'owner_id': fields.String(required=True, description='ID of the owner')
+})
 
 
 
 @api.route('/')
 class PlaceList(Resource):
-    @api.expect(place_model)
+    @api.expect(place_creation_model)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
         place_data = api.payload
-        user_id = place_data.get('owner_id')
-        user = facade.get_user(user_id)
-        if user is None:
-            return (f"error': 'Owner not found"), 400
-        
-        place_data['owner'] = user
-
         new_place = facade.create_place(place_data)
-        
-        response_data = {
-            'id': new_place.id,  # Assuming `new_place` has an `id` attribute
-            'title': new_place.title,
-            'description': new_place.description,
-            'price': new_place.price,
-            'latitude': new_place.latitude,
-            'longitude': new_place.longitude,
-            'owner_id': new_place.owner_id
-            }
-
-        return response_data, 201  # Return the response with status code 201
+        return marshal(new_place, place_creation_model), 201  # Return the response with status code 201
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
