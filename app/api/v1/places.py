@@ -46,6 +46,15 @@ place_creation_response_model = api.model('Place_creation_response', {
     'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
+place_get_response_model = api.model('Place_creation_response', {
+    'id': fields.String(required=True, description='id of the place'),
+    'title': fields.String(required=True, description='Title of the place'),
+    'latitude': fields.Float(required=True, description='Latitude of the place'),
+    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'owner_id': fields.String(required=True, description='ID of the owner')
+})
+
+
 
 @api.route('/')
 class PlaceList(Resource):
@@ -61,8 +70,8 @@ class PlaceList(Resource):
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
         """Retrieve a list of all places"""
-        # Placeholder for logic to return a list of all places
-        pass
+        all_places = facade.get_all_places()
+        return marshal(all_places, place_get_response_model)
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):

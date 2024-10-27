@@ -11,6 +11,7 @@ class Place(BaseModel):
         self.latitude = self.latitude_check(latitude)
         self.longitude = self.longitude_check(longitude)
         self.owner = self.owner_check(owner)
+        self.owner_id = owner.id
         self.reviews = []  # List to store related reviews
         self.amenities = []  # List to store related amenities
     
