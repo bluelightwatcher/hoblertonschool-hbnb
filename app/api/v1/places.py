@@ -36,6 +36,15 @@ place_creation_model = api.model('Place_creation', {
     'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
+place_creation_response_model = api.model('Place_creation_response', {
+    'id': fields.String(required=True, description='id of the place'),
+    'title': fields.String(required=True, description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'latitude': fields.Float(required=True, description='Latitude of the place'),
+    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'owner_id': fields.String(required=True, description='ID of the owner')
+})
 
 
 @api.route('/')
@@ -47,7 +56,7 @@ class PlaceList(Resource):
         """Register a new place"""
         place_data = api.payload
         new_place = facade.create_place(place_data)
-        return marshal(new_place, place_creation_model), 201  # Return the response with status code 201
+        return marshal(place_data, place_creation_response_model), 201  # Return the response with status code 201
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
