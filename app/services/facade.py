@@ -100,8 +100,18 @@ class HBnBFacade:
         return self.amenity_repo.get_all()
 
     def update_amenity(self, amenity_id, amenity_data):
-    # Placeholder for logic to update an amenity
-        pass
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
+            raise ValueError("amenity not foud")
+
+        for key, value in amenity_data.items():
+            if hasattr(amenity, key):  
+                setattr(amenity, key, value)
+
+
+        self.amenity_repo.update(amenity.id, amenity_data)
+        return amenity
+  
 
 # Review method 
 
