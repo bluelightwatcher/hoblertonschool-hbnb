@@ -2,8 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place  
 from app.models.amenity import Amenity
-from flask_restx import marshal
-from flask import Flask, jsonify
+from app.models.review import Review
 
 class HBnBFacade:
     """
@@ -84,8 +83,17 @@ class HBnBFacade:
 
 
     def update_place(self, place_id, place_data):
-    # Placeholder for logic to update a place
-        pass
+        place = self.get_place(place_id)
+        if not place:
+            raise ValueError("place not foud")
+
+        for key, value in place_data.items():
+            if hasattr(place, key):  
+                setattr(place, key, value)
+
+
+        self.place_repo.update(place.id, place_data)
+        return place
 
 # Amenity method
 
@@ -116,8 +124,25 @@ class HBnBFacade:
 
 # Review method 
 
-    @classmethod
-    def create_review():
-        pass
+def create_review(self, review_data):
+    review = Review(**review_data)
+    self.review_repo.add(review)
+    return review
+
+def get_review(self, review_id):
+    review = self.review_repo.get(review_id)
+    return review
+
+def get_all_reviews(self):
+    return self.serview_repo.get_all()
+
+def get_reviews_by_place(self, place_id):
+    pass
+
+def update_review(self, review_id, review_data):
+    self.review_repo.update(review_id, review_data)
+
+def delete_review(self, review_id):
+    self.review_repo.delete(review_id)
 
 facade =  HBnBFacade()
