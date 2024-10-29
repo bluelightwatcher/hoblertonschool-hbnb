@@ -18,7 +18,7 @@ class Place(BaseModel):
     @staticmethod
     def price_check(price):
         if price < 0:
-            raise ValueError("price must be positive")
+            raise ValueError
         return price
     
     
@@ -27,23 +27,23 @@ class Place(BaseModel):
         if 0 <= len(title) <= 100:
             return title
         else:
-            raise ValueError("Title is too long")
+            raise ValueError
     
     @staticmethod   
     def latitude_check(latitude):
         if not (-90 <= latitude <= 90):
-            raise ValueError("latitude not correct")
+            raise ValueError
         return latitude
         
     @staticmethod
     def longitude_check(longitude):
         if not (-180 <= longitude <= 180):
-            raise ValueError("longitude not correct")
+            raise ValueError
         return longitude
        
     def owner_check(self,owner):
         if not isinstance(owner, User):
-            raise ValueError(f"Owner {owner} must be a valid User instance")
+            raise ValueError
         return owner
         
     def add_review(self, review):
