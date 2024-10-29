@@ -85,7 +85,7 @@ class HBnBFacade:
     def update_place(self, place_id, place_data):
         place = self.get_place(place_id)
         if not place:
-            raise ValueError("place not foud")
+            raise ValueError
 
         for key, value in place_data.items():
             if hasattr(place, key):  
@@ -111,7 +111,7 @@ class HBnBFacade:
     def update_amenity(self, amenity_id, amenity_data):
         amenity = self.get_amenity(amenity_id)
         if not amenity:
-            raise ValueError("amenity not foud")
+            raise ValueError
 
         for key, value in amenity_data.items():
             if hasattr(amenity, key):  
@@ -124,25 +124,35 @@ class HBnBFacade:
 
 # Review method 
 
-def create_review(self, review_data):
-    review = Review(**review_data)
-    self.review_repo.add(review)
-    return review
+    def create_review(self, review_data):
+        user_id = review_data.pop('user_id')
+        user = self.get_user(user_id)
+        review_data['user'] = user
+        place_id = review_data.pop('place_id')
+        place = self.get_place(place_id)
+        review_data['place'] = place        
+        review = Review(**review_data)
+        self.review_repo.add(review)
+        review.user_id = user_id
+        review.place_id = place_id
+        return review
 
-def get_review(self, review_id):
-    review = self.review_repo.get(review_id)
-    return review
+    def get_review(self, review_id):
+        review = self.review_repo.get(review_id)
+        review.user_id = user_id
+        review.place_id = place_id
+        return review
 
-def get_all_reviews(self):
-    return self.serview_repo.get_all()
+    def get_all_reviews(self):
+        return self.serview_repo.get_all()
 
-def get_reviews_by_place(self, place_id):
-    pass
+    def get_reviews_by_place(self, place_id):
+        pass
 
-def update_review(self, review_id, review_data):
-    self.review_repo.update(review_id, review_data)
+    def update_review(self, review_id, review_data):
+        self.review_repo.update(review_id, review_data)
 
-def delete_review(self, review_id):
-    self.review_repo.delete(review_id)
+    def delete_review(self, review_id):
+        self.review_repo.delete(review_id)
 
 facade =  HBnBFacade()
