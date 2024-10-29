@@ -1,12 +1,22 @@
 from flask_restx import Namespace, Resource, fields, marshal
 from app.services.facade import facade
+from werkzeug.exceptions import BadRequest
 
 api = Namespace('places', description='Place operations')
+error = BadRequest('Invalid input data')
+not_found_error = BadRequest('Place not found')
 
 # Define the models for related entities
 amenity_model = api.model('PlaceAmenity', {
     'id': fields.String(description='Amenity ID'),
     'name': fields.String(description='Name of the amenity')
+})
+
+review_model = api.model('PlaceReview', {
+    'id': fields.String(description='Review ID'),
+    'text': fields.String(description='Text of the review'),
+    'rating': fields.Integer(description='Rating of the place (1-5)'),
+    'user_id': fields.String(description='ID of the user')
 })
 
 user_model = api.model('PlaceUser', {
@@ -24,9 +34,12 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'owner': fields.Nested(user_model, description='Owner details'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    'owner': fields.Nested(user_model, description='Owner of the place'),
+    'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
+    'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
 })
+
+# Defines input validation for place creation request
 place_creation_model = api.model('Place_creation', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -35,7 +48,7 @@ place_creation_model = api.model('Place_creation', {
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner')
 })
-
+# Defines the output requested following the place creation 
 place_creation_response_model = api.model('Place_creation_response', {
     'id': fields.String(required=True, description='id of the place'),
     'title': fields.String(required=True, description='Title of the place'),
@@ -46,13 +59,14 @@ place_creation_response_model = api.model('Place_creation_response', {
     'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
+# Defines the response mode for a get place request
 place_get_response_model = api.model('Place_creation_response', {
     'id': fields.String(required=True, description='id of the place'),
     'title': fields.String(required=True, description='Title of the place'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
 })
-
+# Defines the response model for a get place by if request
 place_detail_response_model = api.model('Place_detail_get_response', {
     'id': fields.String(required=True, description='id of the place'),
     'title': fields.String(required=True, description='Title of the place'),
@@ -74,7 +88,10 @@ class PlaceList(Resource):
     def post(self):
         """Register a new place"""
         place_data = api.payload
-        new_place = facade.create_place(place_data)
+        try: 
+            facade.create_place(place_data)
+        except (ValueError):
+            raise error
         return marshal(place_data, place_creation_response_model), 201  # Return the response with status code 201
 
     @api.response(200, 'List of places retrieved successfully')
@@ -90,6 +107,8 @@ class PlaceResource(Resource):
     def get(self, place_id):
         """Get place details by ID"""
         place = facade.get_place(place_id)
+        if place is None:
+            raise not_found_error
         return marshal(place, place_detail_response_model), 200
 
     @api.expect(place_model)
@@ -98,9 +117,8 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         place_data = api.payload
-
-        place = facade.update_place(place_id, place_data)
-        if not place:
-            return {'error': 'place not found'}, 404
-        else:
-            return {f'message': 'place successfully updated'}, 200
+        try:
+            facade.update_place(place_id, place_data)
+        except ValueError:
+            raise not_found_error
+        return {'message': 'place successfully updated'}, 200
