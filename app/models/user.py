@@ -28,16 +28,23 @@ class User(BaseModel):
                         raise TypeError("Name must be a string")
                 return last_name
 
-
         @staticmethod
         def email_check(email):
                 regex = r'^[a-zA-Z0-9.+-]+@[a-zA-Z]+\.[a-zA-Z0-9]{2,}+$'
                 if not re.match(regex, email):
                     raise ValueError
                 return email 
-        
-       
-        
+
+        """
+        def isadmin(place_id):
+                place = facade.get_place(place_id)
+                if not isinstance(place, Place):
+                      raise ValueError
+                if place.owner_id == id:
+                       return True
+                return False
+        """
+ 
         def add_place(self, place):
                self.places.append(place)
 

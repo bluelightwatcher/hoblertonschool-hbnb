@@ -12,6 +12,11 @@ amenity_model = api.model('PlaceAmenity', {
     'name': fields.String(description='Name of the amenity')
 })
 
+# Define the amenity models for list
+amenity_list_model = api.model('PlaceAmenityList', {
+    'name': fields.String(description='Name of the amenity')
+})
+
 review_model = api.model('PlaceReview', {
     'id': fields.String(description='Review ID'),
     'text': fields.String(description='Text of the review'),
@@ -76,7 +81,8 @@ place_detail_response_model = api.model('Place_detail_get_response', {
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
     'owner': fields.Nested(user_model, description='Owner details'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    'amenities': fields.List(fields.Nested(amenity_list_model), required=True, description="List of amenities ID's"),
+    'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
 })
 
 

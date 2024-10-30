@@ -81,5 +81,5 @@ class PlaceReviewList(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all reviews for a specific place"""
-        # Placeholder for logic to return a list of reviews for a place
-        pass
+        review_by_place = facade.get_reviews_by_place(place_id)
+        return marshal(review_by_place, review_list_response_model), 200

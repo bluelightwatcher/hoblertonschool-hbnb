@@ -25,6 +25,15 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()
     
 
+    """def isadmin(place_id):
+            place = facade.get_place(place_id)
+            if not isinstance(place, Place):
+                  raise ValueError
+            if place.owner_id == id:
+                   return True
+            return False
+    """
+
 
     # Placeholder method for creating a user
     def create_user(self, user_data):
@@ -98,8 +107,15 @@ class HBnBFacade:
 # Amenity method
 
     def create_amenity(self, amenity_data):
+        """pop unecessary data from payload
+        create and store review in the repository
+        attached review to the place instance
+        """
+        place_id = amenity_data.pop('place_id')
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
+        place = self.get_place(place_id)
+        place.add_amenity(amenity)
         return amenity
 
     def get_amenity(self, amenity_id):
@@ -147,10 +163,11 @@ class HBnBFacade:
         return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
-        return self.serview_repo.get_all()
+        return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        pass
+        place = self.get_place(place_id)
+        return place.reviews
 
     def update_review(self, review_id, review_data):
         self.review_repo.update(review_id, review_data)

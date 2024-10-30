@@ -53,5 +53,5 @@ class Place(BaseModel):
 
     def add_amenity(self, amenity):
         """Add an amenity to the place."""
-        if amenity not in self.add_amenity:
+        if amenity not in self.amenities:
              self.amenities.append(amenity)

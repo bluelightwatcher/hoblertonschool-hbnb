@@ -8,7 +8,8 @@ not_found_error = BadRequest('Amenity not found')
 
 # Define the amenity model for input validation and documentation
 amenity_model = api.model('Amenity', {
-    'name': fields.String(required=True, description='Name of the amenity')
+    'name': fields.String(required=True, description='Name, of the amenity'),
+    'place_id': fields.String(required=True, description='Id of the place to add review to')
 })
 amenity_response_model = api.model('Amenity_response', {
     'id': fields.String(required=True, description='id of the amenity'),
