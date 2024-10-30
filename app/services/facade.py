@@ -125,6 +125,11 @@ class HBnBFacade:
 # Review method 
 
     def create_review(self, review_data):
+        """ to create a review we first pop unecessecary data from the payload
+        then create the review and store it
+        adding the review to the place instance
+        finally adding back necessary data for the client response
+        """
         user_id = review_data.pop('user_id')
         user = self.get_user(user_id)
         review_data['user'] = user
@@ -133,15 +138,13 @@ class HBnBFacade:
         review_data['place'] = place        
         review = Review(**review_data)
         self.review_repo.add(review)
+        place.add_review(review)
         review.user_id = user_id
         review.place_id = place_id
         return review
 
     def get_review(self, review_id):
-        review = self.review_repo.get(review_id)
-        review.user_id = user_id
-        review.place_id = place_id
-        return review
+        return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
         return self.serview_repo.get_all()

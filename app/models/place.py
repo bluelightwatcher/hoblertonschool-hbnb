@@ -48,8 +48,10 @@ class Place(BaseModel):
         
     def add_review(self, review):
         """Add a review to the place."""
-        self.reviews.append(review)
+        if review not in self.reviews:
+             self.reviews.append(review)
 
     def add_amenity(self, amenity):
         """Add an amenity to the place."""
-        self.amenities.append(amenity)
+        if amenity not in self.add_amenity:
+             self.amenities.append(amenity)

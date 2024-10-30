@@ -43,6 +43,8 @@ class InMemoryRepository(Repository):
         obj = self.get(obj_id)
         if obj:
             obj.update(data)
+        else:
+            return (f"Object: {obj_id} not found")
 
     def delete(self, obj_id):
         if obj_id in self._storage:

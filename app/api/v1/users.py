@@ -12,6 +12,8 @@ user_model = api.model('User', {
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user',)
 })
+
+# Define the user model response
 user_response_model = api.model('User_response', {
     'id' : fields.String(required=True, description='Id of the user inherited from base model'),
     'first_name': fields.String(required=True, description='First name of the user'),
@@ -57,7 +59,7 @@ class UserResource(Resource):
     @api.response(400, 'Invalid input data')
     @api.marshal_with(user_response_model, code=200)
     def put(self, user_id):
-        """Register a new user"""
+        """Update User's details"""
         user_data = api.payload
 
         user = facade.update_user(user_id, user_data)
