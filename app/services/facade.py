@@ -159,6 +159,7 @@ class HBnBFacade:
 
     def create_review(self, review_data):
         """ to create a review we first pop unecessecary data from the payload
+        checks if user is admin of the place
         then create the review and store it
         adding the review to the place instance
         finally adding back necessary data for the client response
@@ -168,6 +169,9 @@ class HBnBFacade:
         review_data['user'] = user
         place_id = review_data.pop('place_id')
         place = self.get_place(place_id)
+        owner_id = place.owner_id
+        if self.isadmin(user_id, owner_id) is True:
+            raise ValueError
         review_data['place'] = place        
         review = Review(**review_data)
         self.review_repo.add(review)
