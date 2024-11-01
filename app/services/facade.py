@@ -25,14 +25,16 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()
     
 
-    """def isadmin(place_id):
-            place = facade.get_place(place_id)
-            if not isinstance(place, Place):
-                  raise ValueError
-            if place.owner_id == id:
-                   return True
-            return False
-    """
+    def isadmin(self, user_id, owner_id):
+            print(f"user_id {user_id} from the isadmin method itself")
+            print(f"owner_id {owner_id} from the isadmin method itself")
+            if owner_id == user_id:
+                print("if true")
+                return True
+            else:
+                print("if False")
+                return False
+    
 
 
     # Placeholder method for creating a user
@@ -91,9 +93,19 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
 
-    def update_place(self, place_id, place_data):
+    def update_place(self, place_id, user_id, place_data):
         place = self.get_place(place_id)
+        print(f"Place with id {place_id} passed to update methode in the facade.")
+        
         if not place:
+            print(f"Place with id {place_id} not found from the update method.")
+            raise ValueError
+        
+        owner_id = place.owner_id
+        print(f"Owner_id {owner_id} retrieved from update_method")
+        
+        if self.isadmin(user_id, owner_id) is False:
+            print(f"Place with id {place_id} not after isadmin in the update method.")
             raise ValueError
 
         for key, value in place_data.items():

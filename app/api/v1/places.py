@@ -64,7 +64,7 @@ place_creation_response_model = api.model('Place_creation_response', {
     'owner_id': fields.String(required=True, description='ID of the owner')
 })
 
-# Defines the response mode for a get place request
+# Defines the response model for a get place request
 place_get_response_model = api.model('Place_creation_response', {
     'id': fields.String(required=True, description='id of the place'),
     'title': fields.String(required=True, description='Title of the place'),
@@ -82,6 +82,17 @@ place_detail_response_model = api.model('Place_detail_get_response', {
     'owner_id': fields.String(required=True, description='ID of the owner'),
     'owner': fields.Nested(user_model, description='Owner details'),
     'amenities': fields.List(fields.Nested(amenity_list_model), required=True, description="List of amenities ID's"),
+    'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
+})
+
+# Defines the api payload for a place PUT request
+place_update_model = api.model('Place update model', {
+    'title': fields.String(required=True, description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'latitude': fields.Float(required=True, description='Latitude of the place'),
+    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
     'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
 })
 
@@ -116,15 +127,18 @@ class PlaceResource(Resource):
         if place is None:
             raise not_found_error
         return marshal(place, place_detail_response_model), 200
-
-    @api.expect(place_model)
+    
+@api.route('/<place_id>/<user_id>/')
+class PlaceResource(Resource):
+    @api.expect(place_update_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
-    def put(self, place_id):
+    def put(self,user_id, place_id):
         place_data = api.payload
         try:
-            facade.update_place(place_id, place_data)
+            facade.update_place(place_id, user_id, place_data)
         except ValueError:
+            print(f"Place with id {place_id} not found from endpoint.")
             raise not_found_error
         return {'message': 'place successfully updated'}, 200

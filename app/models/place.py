@@ -17,7 +17,7 @@ class Place(BaseModel):
     
     @staticmethod
     def price_check(price):
-        if price < 0:
+        if price <= 0:
             raise ValueError
         return price
     
