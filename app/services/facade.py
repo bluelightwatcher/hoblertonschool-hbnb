@@ -136,7 +136,12 @@ class HBnBFacade:
     def get_all_amenities(self):
         return self.amenity_repo.get_all()
 
-    def update_amenity(self, amenity_id, amenity_data):
+    def update_amenity(self, amenity_id, amenity_data, user_id, place_id):
+        amenity = facade.get_amenity(amenity_id)
+        place = facade.get_place(place_id)
+        owner_id = place.owner_id
+        if self.isadmin(user_id, owner_id) is False:
+            raise ValueError
         amenity = self.get_amenity(amenity_id)
         if not amenity:
             raise ValueError

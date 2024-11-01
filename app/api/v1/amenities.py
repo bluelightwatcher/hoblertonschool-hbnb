@@ -15,6 +15,14 @@ amenity_response_model = api.model('Amenity_response', {
     'id': fields.String(required=True, description='id of the amenity'),
     'name': fields.String(required=True, description='name of the amenity')
 })
+
+# Defines the amenity update_model
+amenity_update_model = api.model('Amenity_update_model', {
+    'name': fields.String(required=True, description='Name, of the amenity')
+})
+
+
+
 @api.route('/')
 class AmenityList(Resource):
     @api.expect(amenity_model)
@@ -48,14 +56,17 @@ class AmenityResource(Resource):
             raise not_found_error
         return marshal(amenity, amenity_response_model, 200)
 
-    @api.expect(amenity_model)
+@api.route('/<amenity_id>/<user_id>/<place_id>')
+class AmenityList(Resource):
+    @api.expect(amenity_update_model)
     @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
-    def put(self, amenity_id):
+    def put(self, amenity_id, user_id, place_id):
         amenity_data = api.payload
+
         try:
-            amenity = facade.update_amenity(amenity_id, amenity_data)
+            facade.update_amenity(amenity_id, amenity_data,user_id, place_id)
         except ValueError:
             raise not_found_error
         return {f"message": "Amenity updated successfully"}, 200
