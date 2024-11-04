@@ -23,17 +23,17 @@ amenity_update_model = api.model('Amenity_update_model', {
 
 
 
-@api.route('/')
+@api.route('/<user_id>')
 class AmenityList(Resource):
     @api.expect(amenity_model)
     @api.response(201, 'Amenity successfully created')
     @api.response(400, 'Invalid input data')
 
-    def post(self):
+    def post(self, user_id):
         """Register a new amenity"""
         amenity_data = api.payload
         try:
-            amenity = facade.create_amenity(amenity_data)
+            amenity = facade.create_amenity(amenity_data, user_id)
         except ValueError:
             raise error
         return marshal(amenity, amenity_response_model)

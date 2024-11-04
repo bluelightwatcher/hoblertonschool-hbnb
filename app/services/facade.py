@@ -50,7 +50,7 @@ class HBnBFacade:
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
-               
+    
     def update_user(self, user_id, user_data):
         user = self.get_user(user_id)
         if not user:
@@ -63,9 +63,6 @@ class HBnBFacade:
 
         self.user_repo.update(user.id, user_data)
         return user
-    
-
-
 
 # Place method
 
@@ -118,15 +115,19 @@ class HBnBFacade:
 
 # Amenity method
 
-    def create_amenity(self, amenity_data):
+    def create_amenity(self, amenity_data, user_id):
         """pop unecessary data from payload
         create and store review in the repository
         attached review to the place instance
         """
         place_id = amenity_data.pop('place_id')
-        amenity = Amenity(**amenity_data)
-        self.amenity_repo.add(amenity)
         place = self.get_place(place_id)
+        owner_id = place.owner_id
+        if self.isadmin(user_id, owner_id) == False:
+            raise ValueError
+       
+        amenity = Amenity(**amenity_data)        
+        self.amenity_repo.add(amenity)
         place.add_amenity(amenity)
         return amenity
 
@@ -170,12 +171,15 @@ class HBnBFacade:
         place_id = review_data.pop('place_id')
         place = self.get_place(place_id)
         owner_id = place.owner_id
+
         if self.isadmin(user_id, owner_id) is True:
             raise ValueError
+        
         review_data['place'] = place        
         review = Review(**review_data)
         self.review_repo.add(review)
         place.add_review(review)
+        
         review.user_id = user_id
         review.place_id = place_id
         return review

@@ -3,6 +3,7 @@ import re
 
 
 class User(BaseModel):
+       
         def __init__(self,first_name, last_name, email, is_admin=False):
                 super().__init__()
                 self.first_name = self.first_name_check(first_name)
@@ -50,3 +51,10 @@ class User(BaseModel):
 
         def add_review(self, review):
                self.reviews.append(review)
+
+User.validation_methods = {
+    'first_name': User.first_name_check,
+    'last_name': User.last_name_check,
+    'email': User.email_check
+}      
+
